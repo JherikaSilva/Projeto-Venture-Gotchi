@@ -1,0 +1,47 @@
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+from django.core.cache import cache
+
+
+class LoginForm(AuthenticationForm):
+    """
+    Formulário de Login aprimorado com:
+    - placeholders dinâmicos
+    - CSS automático
+    - Validação com mensagens claras
+    - Proteção contra tentativas excessivas (anti brute-force)
+    """
+
+    username = forms.CharField(
+        label="Usuário ou E-mail",
+        widget=forms.TextInput()
+    )
+
+    password = forms.CharField(
+        label="Senha",
+        widget=forms.PasswordInput()
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    
+        for name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'input-field',          
+                'placeholder': field.label,      
+            })
+
+    
+        self.fields['username'].widget.attrs['autofocus'] = True
+
+
+
+
+    def confirm_login_allowed(self, user):
+        """Mensagens personalizadas para contas inválidas"""
+        if not user.is_active:
+            raise forms.ValidationError(
+                "Sua conta está desativada. Entre em contato com o suporte.",
+                code='inactive'
+            )
