@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Perfil — VentureGotchi{% endblock %}
+
+{% block content %}
+
+<h1 class="fw-bold mb-4">Perfil de {{ profile.username }}</h1>
+
+<div class="row">
+
+    <!-- Avatar -->
+    <div class="col-md-4 text-center">
+        <div class="card shadow-sm p-3 mb-4">
+            {% if profile.avatar %}
+                <img src="{{ profile.avatar }}" class="rounded-circle img-fluid" alt="Avatar">
+            {% else %}
+                <img src="{% static 'img/default_avatar.png' %}" class="rounded-circle img-fluid" alt="Avatar padrão">
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Informações -->
+    <div class="col-md-8">
+        <div class="card shadow-sm p-4 mb-4">
+
+            <p><strong>Nome completo:</strong> {{ profile.full_name }}</p>
+            <p><strong>Usuário:</strong> @{{ profile.username }}</p>
+            <p><strong>Email:</strong> {{ profile.email }}</p>
+
+            <hr>
+
+            <p><strong>Biografia:</strong></p>
+            {% if profile.bio %}
+                <p>{{ profile.bio }}</p>
+            {% else %}
+                <p class="text-muted">Nenhuma biografia adicionada.</p>
+            {% endif %}
+
+            <p><strong>Interesses:</strong></p>
+            {% if profile.interests %}
+                <p>{{ profile.interests }}</p>
+            {% else %}
+                <p class="text-muted">Nenhum interesse cadastrado.</p>
+            {% endif %}
+        </div>
+
+        <!-- Card de XP -->
+        <div class="card shadow-sm p-4">
+            <h5 class="fw-bold">Progresso</h5>
+
+            <p>Nível: <strong>{{ profile.level }}</strong></p>
+            <p>XP: {{ profile.xp }} / {{ profile.next_level_xp }}</p>
+
+            <div class="progress" style="height: 25px;">
+                <div class="progress-bar bg-success"
+                    role="progressbar"
+                    style="width: {{ profile.progress_percent }}%;"
+                    aria-valuenow="{{ profile.progress_percent }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100">
+                    {{ profile.progress_percent }}%
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
