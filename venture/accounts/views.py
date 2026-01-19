@@ -6,9 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# --------------------------
-# LOGIN
-# --------------------------
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -28,18 +26,13 @@ def login_view(request):
     return render(request, 'accounts/login.html')
 
 
-# --------------------------
-# LOGOUT
-# --------------------------
 
 def logout_view(request):
     logout(request)
     return redirect('login')
 
 
-# --------------------------
-# HOME VIEW
-# --------------------------
+
 
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/home.html'
@@ -67,9 +60,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
         return context
 
 
-# --------------------------
-# PROFILE VIEW
-# --------------------------
+
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/profile.html'
