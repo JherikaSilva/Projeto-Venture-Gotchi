@@ -1,19 +1,47 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
 import logging
 
 logger = logging.getLogger(__name__)
 
-class HomeView(LoginRequiredMixin, TemplateView):
-    """
-    Home (Dashboard inicial) do usuário logado.
-    Exibe dados de progresso, nível e prepara o terreno
-    para XP, missões e gráficos futuramente.
-    """
+# --------------------------
+# LOGIN
+# --------------------------
 
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user:
+            login(request, user)
+            return redirect('home')
+        else:
+            return render(request, 'accounts/login.html', {
+                'error': 'Usuário ou senha incorretos'
+            })
+
+    return render(request, 'accounts/login.html')
+
+
+# --------------------------
+# LOGOUT
+# --------------------------
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+
+# --------------------------
+# HOME VIEW
+# --------------------------
+
+class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/home.html'
     login_url = 'login'
 
@@ -21,7 +49,6 @@ class HomeView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-       
         xp = getattr(user, 'xp', 0)
         level = getattr(user, 'level', 1)
         
@@ -36,16 +63,15 @@ class HomeView(LoginRequiredMixin, TemplateView):
             'progress_percent': int(progress_percent),
         }
 
-        logger.info(f"HOME ACESSADA → usuário: {user.username}")
-
+        logger.info(f"HOME ACESSADA — usuário: {user.username}")
         return context
 
-class ProfileView(LoginRequiredMixin, TemplateView):
-    """
-    Página de perfil do usuário.
-    Mostra informações pessoais, avatar e progresso.
-    """
 
+# --------------------------
+# PROFILE VIEW
+# --------------------------
+
+class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/profile.html'
     login_url = 'login'
 
@@ -64,7 +90,5 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             'level': getattr(user, 'level', 1),
         }
 
-        logger.info(f"PERFIL ACESSADO → usuário: {user.username}")
-
+        logger.info(f"PERFIL ACESSADO — usuário: {user.username}")
         return context
-
