@@ -1,3 +1,137 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db import transaction
+from django.utils import timezone
+from accounts.util import update_xp
+from .models import Mission, SubTask
 
-# Create your views here.
+
+
+@login_required
+def missions_list(request):
+    missions = request.user.missions.all().order_by('-created_at')
+    return render(request, 'missions/missions_list.html', {
+        'missions': missions
+    })
+
+
+
+@login_required
+def mission_detail(request, mission_id):
+    mission = get_object_or_404(Mission, id=mission_id, user=request.user)
+
+    return render(request, 'missions/mission_detail.html', {
+        'mission': mission,
+        'subtasks': mission.subtasks.order_by('completed', 'created_at')
+    })
+
+
+
+@login_required
+def mission_create(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description', '')
+
+        Mission.objects.create(
+            user=request.user,
+            title=title,
+            description=description
+        )
+
+        messages.success(request, "Missão criada com sucesso!")
+        return redirect('missions_list')
+
+    return render(request, 'missions/mission_create.html')
+
+
+
+@login_required
+def mission_edit(request, mission_id):
+    mission = get_object_or_404(Mission, id=mission_id, user=request.user)
+
+    if request.method == 'POST':
+        mission.title = request.POST.get('title')
+        mission.description = request.POST.get('description', '')
+        mission.save()
+
+        messages.success(request, "Missão atualizada!")
+        return redirect('mission_detail', mission.id)
+
+    return render(request, 'missions/mission_edit.html', {
+        'mission': mission
+    })
+
+
+
+@login_required
+def mission_delete(request, mission_id):
+    mission = get_object_or_404(Mission, id=mission_id, user=request.user)
+
+    if request.method == 'POST':
+        mission.delete()
+        messages.success(request, "Missão excluída!")
+        return redirect('missions_list')
+
+    return render(request, 'missions/mission_delete.html', {
+        'mission': mission
+    })
+
+
+
+@login_required
+def subtask_create(request, mission_id):
+    mission = get_object_or_404(Mission, id=mission_id, user=request.user)
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        xp_reward = int(request.POST.get('xp_reward', 10))
+
+        SubTask.objects.create(
+            mission=mission,
+            title=title,
+            xp_reward=xp_reward
+        )
+
+        messages.success(request, "Tarefa adicionada à missão!")
+        return redirect('mission_detail', mission.id)
+
+    return render(request, 'missions/subtask_create.html', {
+        'mission': mission
+    })
+
+
+@login_required
+@transaction.atomic
+def complete_subtask(request, subtask_id):
+    subtask = get_object_or_404(SubTask, id=subtask_id, mission__user=request.user)
+
+    # Evita xp repetido
+    if subtask.completed:
+        messages.info(request, "Essa subtarefa já foi concluída.")
+        return redirect('mission_detail', subtask.mission.id)
+
+    # Marca subtarefa como feita
+    subtask.completed = True
+    subtask.completed_at = timezone.now()
+    subtask.save()
+
+    # Recompensa XP pela subtarefa
+    xp_gained = subtask.xp_reward
+    update_xp(request.user, xp_gained)
+
+    messages.success(request, f"Tarefa concluída! Você ganhou {xp_gained} XP!")
+
+    mission = subtask.mission
+
+    # Se a missão chegou a 100%, finaliza
+    if mission.progress == 100:
+        mission.completed = True
+        mission.completed_at = timezone.now()
+        mission.save()
+
+        update_xp(request.user, mission.mission_xp)
+        messages.success(request, f"Parabéns! Você completou a missão e ganhou +{mission.mission_xp} XP extra!")
+
+    return redirect('mission_detail', mission.id)
