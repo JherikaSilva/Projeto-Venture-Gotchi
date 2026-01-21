@@ -8,15 +8,13 @@ import dj_database_url
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
-# Carrega variáveis do .env local (não obrigatório no Render)
+
+
 load_dotenv(BASE_DIR / ".env")
 
-# =====================================
-# CONFIGURAÇÕES DE SEGURANÇA
-# =====================================
+
 
 SECRET_KEY = os.getenv("SECRET_KEY", "chave-insegura-fallback")
 
@@ -71,9 +69,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'venturegotchi.urls'
 
 
-# =====================================
-# TEMPLATES
-# =====================================
+
 
 TEMPLATES = [
     {
@@ -93,13 +89,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'venturegotchi.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
-    # Local sem DATABASE_URL → usa SQLite
+    
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -107,7 +102,7 @@ if not DATABASE_URL:
         }
     }
 else:
-    # Render com DATABASE_URL → usa Postgres com SSL
+   
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
@@ -118,8 +113,7 @@ else:
 
 
 
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -129,9 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# =====================================
-# LOCALIZAÇÃO
-# =====================================
+
 
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
@@ -140,29 +132,25 @@ USE_I18N = True
 USE_TZ = True
 
 
-# =====================================
-# ARQUIVOS ESTÁTICOS E MÍDIAS
-# =====================================
+
 
 STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Whitenoise — compressão otimizada
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-# Arquivos enviados pelo usuário (se for ter uploads futuramente)
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-# =====================================
-# DEFAULT PK
-# =====================================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "no-reply@venturegotchi.com"
