@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 import logging
 from django.contrib import messages
 from .forms import ProfileForm
+from django.contrib.auth.views import LoginView
 
 logger = logging.getLogger(__name__)
 
@@ -167,3 +168,15 @@ def profile_edit(request):
         form = ProfileForm(instance=user)
 
     return render(request, "accounts/profile_edit.html", {"form": form})
+
+
+class BootstrapLoginView(LoginView):
+    template_name = "accounts/login.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["username"].widget.attrs.update({"class": "form-control"})
+        form.fields["password"].widget.attrs.update({"class": "form-control"})
+        return form
+
+
