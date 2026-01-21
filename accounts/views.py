@@ -7,6 +7,8 @@ import logging
 from django.contrib import messages
 from .forms import ProfileForm
 from django.contrib.auth.views import LoginView
+from .forms import RegisterForm
+
 
 logger = logging.getLogger(__name__)
 
@@ -39,9 +41,7 @@ def logout_view(request):
 
 
 
-# =======================================
-# LOGIN VIEW — LOGIN MODERNO E SEGURO
-# =======================================
+
 def login_view(request):
     """
     Tela de login customizada usando Bootstrap.
@@ -66,9 +66,7 @@ def login_view(request):
     return render(request, "accounts/login.html")
 
 
-# =======================================
-# LOGOUT VIEW
-# =======================================
+
 def logout_view(request):
     """
     Realiza logout de forma segura e limpa.
@@ -78,9 +76,6 @@ def logout_view(request):
     return redirect("login")
 
 
-# =======================================
-# HOME VIEW — DASHBOARD (CLASS-BASED VIEW)
-# =======================================
 class HomeView(LoginRequiredMixin, TemplateView):
     """
     Home (Dashboard inicial) do usuário logado.
@@ -101,13 +96,12 @@ class HomeView(LoginRequiredMixin, TemplateView):
         
         next_level_xp = level * 100
 
-        # Porcentagem do progresso
         if next_level_xp == 0:
             progress_percent = 0
         else:
             progress_percent = int((xp / next_level_xp) * 100)
 
-        # Enviar tudo organizado ao template
+        
         context["profile"] = {
             "user": user,
             "xp": xp,
@@ -180,3 +174,25 @@ class BootstrapLoginView(LoginView):
         return form
 
 
+class BootstrapLoginView(LoginView):
+    template_name = "accounts/login.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["username"].widget.attrs.update({"class": "form-control"})
+        form.fields["password"].widget.attrs.update({"class": "form-control"})
+        return form
+
+
+def register_view(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Conta criada com sucesso!")
+            return redirect("dashboard")
+    else:
+        form = RegisterForm()
+
+    return render(request, "accounts/register.html", {"form": form})
