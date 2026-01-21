@@ -23,6 +23,10 @@ class User(AbstractUser):
     interests = models.TextField(blank=True, default="")
 
     avatar = models.ImageField(upload_to=avatar_upload_to, blank=True, null=True)
+    tech = models.PositiveIntegerField(default=0)
+    creativity = models.PositiveIntegerField(default=0)
+    discipline = models.PositiveIntegerField(default=0)
+    leadership = models.PositiveIntegerField(default=0)
 
     def xp_for_next_level(self) -> int:
         """XP necessário para ir do nível atual para o próximo."""
