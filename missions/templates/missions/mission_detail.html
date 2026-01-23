@@ -14,11 +14,11 @@
   </div>
 
   {% if mission.description %}
-    <div class="card mb-4">
-      <div class="card-body">
-        {{ mission.description }}
-      </div>
+  <div class="card mb-4">
+    <div class="card-body">
+      {{ mission.description }}
     </div>
+  </div>
   {% endif %}
 
   <h4 class="mb-2">Subtarefas</h4>
@@ -27,30 +27,32 @@
     <div class="card-body">
 
       {% if subtasks %}
-        <ul class="list-group mb-3">
-          {% for s in subtasks %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <div>
-                {% if s.completed %}
-                  <span class="text-success">✔</span>
-                  <span class="text-decoration-line-through">{{ s.title }}</span>
-                {% else %}
-                  {{ s.title }}
-                {% endif %}
-                <span class="badge bg-secondary ms-2">{{ s.xp_reward }} XP</span>
-              </div>
+      <ul class="list-group mb-3">
+        {% for s in subtasks %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            {% if s.completed %}
+            <span class="text-success">✔</span>
+            <span class="text-decoration-line-through">{{ s.title }}</span>
+            {% else %}
+            {{ s.title }}
+            {% endif %}
+            <span class="badge bg-secondary ms-2">{{ s.xp_reward|default:10 }} XP</span>
+          </div>
 
-              {% if not s.completed %}
-                <a class="btn btn-sm btn-success"
-                   href="{% url 'subtask_complete' s.id %}">
-                  Concluir
-                </a>
-              {% endif %}
-            </li>
-          {% endfor %}
-        </ul>
+          {% if not s.completed %}
+          <form method="post" action="{% url 'complete_subtask' s.id %}" class="m-0">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-success" type="submit">
+              Concluir
+            </button>
+          </form>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
       {% else %}
-        <p class="text-muted mb-3">Ainda sem subtarefas.</p>
+      <p class="text-muted mb-3">Ainda sem subtarefas.</p>
       {% endif %}
 
       <hr>
