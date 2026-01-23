@@ -175,3 +175,8 @@ def create_mission(request):
         form = MissionForm()
 
     return render(request, "missions/create.html", {"form": form})
+
+@login_required
+def missions_list(request):
+    missions = Mission.objects.filter(user=request.user).order_by("-created_at")
+    return render(request, "missions/missions_list.html", {"missions": missions})
