@@ -5,10 +5,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("core", include("core.urls")),
-    path("accounts/", include("accounts.urls")),
+    path("core/", include("core.urls")),
+    path("", include("accounts.urls")),
     path("missions/", include("missions.urls")),
-    path("", include("dashboard.urls")),
+    path("dashboard/", include("dashboard.urls")),
 ]
 
 
