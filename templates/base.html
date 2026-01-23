@@ -24,10 +24,10 @@
             <ul class="navbar-nav me-auto">
             {% if user.is_authenticated %}
                 <li class="nav-item">
-                <a class="nav-link" href="/dashboard/">Dashboard</a>
+                <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="/missions/create/">Nova Missão</a>
+                <a class="nav-link" href="{% url 'mission_create' %}">Nova Missão</a>
                 </li>
             {% endif %}
             </ul>

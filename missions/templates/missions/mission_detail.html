@@ -1,51 +1,78 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Detalhes da Missão{% endblock %}
-
+{% extends "base.html" %}
 {% block content %}
-<div class="container mt-4">
 
-    <h2 class="fw-bold mb-3">{{ mission.title }}</h2>
-    <p class="text-muted">{{ mission.description }}</p>
-
-    <p><strong>Progresso:</strong> {{ mission.progress }}%</p>
-
-    <div class="progress mb-4" style="height: 22px;">
-        <div class="progress-bar {% if mission.progress == 100 %}bg-success{% endif %}"
-             style="width: {{ mission.progress }}%;">
-        </div>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h2 class="mb-1">{{ mission.title }}</h2>
+      <div class="text-muted">
+        {{ mission.get_mission_type_display }} • {{ mission.get_track_display }}
+        {% if mission.deadline %} • Prazo: {{ mission.deadline }}{% endif %}
+      </div>
     </div>
+    <a class="btn btn-outline-secondary" href="/dashboard/">Voltar</a>
+  </div>
 
-    <div class="d-flex gap-2 mb-3">
-        <a href="{% url 'mission_edit' mission.id %}" class="btn btn-warning">Editar Missão</a>
-        <a href="{% url 'mission_delete' mission.id %}" class="btn btn-danger">Excluir Missão</a>
-        <a href="{% url 'subtask_create' mission.id %}" class="btn btn-primary">+ Nova Tarefa</a>
+  {% if mission.description %}
+    <div class="card mb-4">
+      <div class="card-body">
+        {{ mission.description }}
+      </div>
     </div>
+  {% endif %}
 
-    <h4 class="fw-bold mt-4">Tarefas</h4>
+  <h4 class="mb-2">Subtarefas</h4>
 
-    {% for subtask in mission.subtasks.all %}
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <span>
-                {% if subtask.completed %}
-                    <s>{{ subtask.title }}</s>
+  <div class="card mb-4">
+    <div class="card-body">
+
+      {% if subtasks %}
+        <ul class="list-group mb-3">
+          {% for s in subtasks %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                {% if s.completed %}
+                  <span class="text-success">✔</span>
+                  <span class="text-decoration-line-through">{{ s.title }}</span>
                 {% else %}
-                    {{ subtask.title }}
+                  {{ s.title }}
                 {% endif %}
-            </span>
+                <span class="badge bg-secondary ms-2">{{ s.xp_reward }} XP</span>
+              </div>
 
-            {% if not subtask.completed %}
-                <a href="{% url 'complete_subtask' subtask.id %}" class="btn btn-success btn-sm">
-                    Concluir +{{ subtask.xp_reward }} XP
+              {% if not s.completed %}
+                <a class="btn btn-sm btn-success"
+                   href="{% url 'subtask_complete' s.id %}">
+                  Concluir
                 </a>
-            {% else %}
-                <span class="badge bg-secondary">Concluída</span>
-            {% endif %}
-        </div>
-    {% empty %}
-        <p class="text-muted">Nenhuma tarefa cadastrada ainda.</p>
-    {% endfor %}
-</div>
-{% endblock %}
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted mb-3">Ainda sem subtarefas.</p>
+      {% endif %}
 
+      <hr>
+
+      <h5 class="mb-3">Adicionar subtarefa</h5>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-md-8 mb-3">
+            <label class="form-label">Título</label>
+            {{ subtask_form.title }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">XP</label>
+            {{ subtask_form.xp_reward }}
+          </div>
+        </div>
+        <button class="btn btn-primary">Adicionar</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
