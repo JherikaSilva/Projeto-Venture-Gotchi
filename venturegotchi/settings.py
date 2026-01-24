@@ -114,6 +114,7 @@ else:
     }
 
 
+ALLOWED_HOSTS = ["*", ".onrender.com"]
 
 
 
