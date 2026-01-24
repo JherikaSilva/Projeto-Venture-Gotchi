@@ -1,10 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.cache import cache
-from .models import User
+from .models import User, Profile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-
+from django.contrib.auth.models import User
 class LoginForm(AuthenticationForm):
     """
     Formulário de Login aprimorado com:
@@ -88,4 +88,12 @@ class ProfileForm(forms.ModelForm):
             "interests": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
         }
 
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
 
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['avatar', 'bio', 'interests']

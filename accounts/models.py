@@ -1,8 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, User
 import uuid
 import os
-
+from .models import Profile
 
 def avatar_upload_to(instance, filename):
     ext = os.path.splitext(filename)[1]
@@ -12,13 +12,13 @@ def avatar_upload_to(instance, filename):
 
 
 class User(AbstractUser):
-    xp = models.PositiveIntegerField(default=0)
-    level = models.PositiveIntegerField(default=1)
-
     bio = models.TextField(blank=True, default="")
-    interests = models.TextField(blank=True, default="")
+    interests = models.CharField(max_length=255, blank=True, default="")
 
-    avatar = models.ImageField(upload_to=avatar_upload_to, blank=True, null=True)
+   
+    avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
+
+
 
     tech = models.PositiveIntegerField(default=0)
     creativity = models.PositiveIntegerField(default=0)
@@ -46,3 +46,13 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.username} (Level {self.level})"
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['avatar', 'bio', 'interests']
