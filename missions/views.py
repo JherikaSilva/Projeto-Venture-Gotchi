@@ -6,6 +6,7 @@ from django.utils import timezone
 from .models import Mission, SubTask
 from .forms import MissionForm, SubTaskForm
 from django.views.decorators.http import require_POST
+from django.apps import apps
 
 
 @login_required
@@ -109,23 +110,109 @@ def subtask_create(request, mission_id):
     })
 
 
-
 @login_required
 @require_POST
 @transaction.atomic
 def complete_subtask(request, subtask_id):
+    Achievement = apps.get_model("dashboard", "Achievement")
+    ActivityEvent = apps.get_model("dashboard", "ActivityEvent")
+
     subtask = get_object_or_404(SubTask, id=subtask_id, mission__user=request.user)
 
-    # evita XP repetido
     if subtask.completed:
         messages.info(request, "Essa subtarefa já foi concluída.")
         return redirect("mission_detail", mission_id=subtask.mission.id)
 
-    # usa a regra de negócio central (XP + stats se existir)
-    subtask.complete()
+    user = request.user
+    before_level = user.level
+    mission = subtask.mission
 
-    messages.success(request, f"Subtarefa concluída! Você ganhou {subtask.xp_reward or 10} XP ✅")
-    return redirect("mission_detail", mission_id=subtask.mission.id)
+    # completa usando a regra do model
+    xp_gained = subtask.complete()
+
+    # histórico: subtarefa concluída
+    ActivityEvent.objects.create(
+        user=user,
+        event_type="subtask_completed",
+        message=f"Concluiu a subtarefa: {subtask.title}",
+        xp_delta=xp_gained,
+        track=mission.track,
+    )
+
+    # conquista: primeiro XP / primeira subtarefa
+    Achievement.objects.get_or_create(
+        user=user,
+        code="first_subtask",
+        defaults={
+            "title": "Primeira Subtarefa!",
+            "description": "Você concluiu sua primeira subtarefa.",
+        },
+    )
+
+    # se subiu de nível, registra no histórico + conquista
+    user.refresh_from_db(fields=["level", "xp"])
+    if user.level > before_level:
+        ActivityEvent.objects.create(
+            user=user,
+            event_type="level_up",
+            message=f"Subiu para o nível {user.level}!",
+            xp_delta=0,
+            track="",
+        )
+
+        if user.level >= 5:
+            Achievement.objects.get_or_create(
+                user=user,
+                code="level_5",
+                defaults={
+                    "title": "Nível 5!",
+                    "description": "Você chegou ao nível 5. Continue evoluindo!",
+                },
+            )
+
+    # se missão chegou em 100%, conclui e dá bônus
+    mission.refresh_from_db()
+    if mission.progress == 100 and not mission.completed:
+        mission.completed = True
+        mission.save(update_fields=["completed"])
+
+        # bônus de XP por tipo de missão (simples e alinhado ao PDF)
+        bonus_map = {"daily": 20, "weekly": 50, "monthly": 100}
+        mission_bonus = bonus_map.get(mission.mission_type, 20)
+
+        before_level2 = user.level
+        user.add_xp(mission_bonus)
+        user.refresh_from_db(fields=["level", "xp"])
+
+        ActivityEvent.objects.create(
+            user=user,
+            event_type="mission_completed",
+            message=f"Concluiu a missão: {mission.title}",
+            xp_delta=mission_bonus,
+            track=mission.track,
+        )
+
+        Achievement.objects.get_or_create(
+            user=user,
+            code="first_mission",
+            defaults={
+                "title": "Primeira Missão!",
+                "description": "Você concluiu sua primeira missão completa.",
+            },
+        )
+
+        if user.level > before_level2:
+            ActivityEvent.objects.create(
+                user=user,
+                event_type="level_up",
+                message=f"Subiu para o nível {user.level}!",
+                xp_delta=0,
+                track="",
+            )
+
+    messages.success(request, f"Subtarefa concluída! Você ganhou {xp_gained} XP ✅")
+    return redirect("mission_detail", mission_id=mission.id)
+
 
 
 @login_required

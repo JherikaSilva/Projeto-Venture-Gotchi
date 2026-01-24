@@ -9,7 +9,7 @@
         <img src="{{ user.avatar.url }}" class="rounded-circle border" style="width:64px;height:64px;object-fit:cover;">
       {% else %}
         <div class="rounded-circle border d-flex align-items-center justify-content-center"
-             style="width:64px;height:64px;background:#f4f4f4;">
+            style="width:64px;height:64px;background:#f4f4f4;">
           <span class="small text-muted">Gotchi</span>
         </div>
       {% endif %}
@@ -110,32 +110,30 @@
     </div>
   </div>
 
-  <!-- Histórico -->
-  <div class="col-lg-6">
-    <div class="card shadow-sm h-100">
-      <div class="card-body">
-        <h5 class="mb-3">Histórico (subtarefas concluídas)</h5>
+<!-- Histórico -->
 
-        {% if done_subtasks %}
-          <ul class="list-group">
-            {% for s in done_subtasks %}
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <div class="fw-semibold">{{ s.title }}</div>
-                  <div class="small text-muted">Missão: {{ s.mission.title }}</div>
-                </div>
-                <span class="badge bg-success">+{{ s.xp_reward }} XP</span>
-              </li>
-            {% endfor %}
-          </ul>
+<h5 class="mb-3">Histórico</h5>
+
+{% if history %}
+  <ul class="list-group">
+    {% for e in history %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <div class="fw-semibold">{{ e.message }}</div>
+          <div class="small text-muted">{{ e.created_at|date:"d/m/Y H:i" }}</div>
+        </div>
+        {% if e.xp_delta %}
+          <span class="badge bg-success">+{{ e.xp_delta }} XP</span>
         {% else %}
-          <p class="text-muted mb-0">Ainda sem histórico.</p>
+          <span class="badge bg-secondary">{{ e.get_event_type_display }}</span>
         {% endif %}
-      </div>
-    </div>
-  </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="text-muted mb-0">Ainda sem histórico.</p>
+{% endif %}
 
-</div>
 
 <!-- Sugestões -->
 <div class="card shadow-sm mt-4">
@@ -152,6 +150,37 @@
     {% endif %}
   </div>
 </div>
+<div class="card shadow-sm mt-4">
+  <div class="card-body">
+    <h5 class="mb-3">Gráfico: XP ganho por dia</h5>
+    <canvas id="xpChart" height="90"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const xpDays = {{ xp_days|safe }};
+  const xpTotals = {{ xp_totals|safe }};
+
+  const ctx = document.getElementById('xpChart');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: xpDays,
+      datasets: [{
+        label: 'XP por dia',
+        data: xpTotals,
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+
 
 <!-- Conquistas (opcional) -->
 {% if achievements %}
