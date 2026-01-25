@@ -1,78 +1,35 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 import logging
 from django.contrib import messages
-from .forms import ProfileForm, RegisterForm
-from django.contrib.auth.views import LoginView
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.views.generic import TemplateView
+
+from .forms import RegisterForm, ProfileUpdateForm, LoginForm
 
 logger = logging.getLogger(__name__)
 
 
 
 def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+    """
+    Tela de login customizada.
+    """
+    form = LoginForm(request, data=request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        login(request, form.get_user())
+        messages.success(request, "Login realizado com sucesso!")
+        return redirect("home")
 
-        user = authenticate(request, username=username, password=password)
-
-        if user:
-            login(request, user)
-            return redirect('home')
-        else:
-            return render(request, 'accounts/login.html', {
-                'error': 'Usuário ou senha incorretos'
-            })
-
-    return render(request, 'accounts/login.html')
-
+    return render(request, "accounts/login.html", {"form": form})
 
 
 def logout_view(request):
-    logout(request)
-    return redirect('login')
-
-
-
-
-
-
-def login_view(request):
-    """
-    Tela de login customizada usando Bootstrap.
-    Valida credenciais, exibe erros e redireciona ao dashboard.
-    """
-
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-
-        user = authenticate(request, username=username, password=password)
-
-        if user:
-            login(request, user)
-            messages.success(request, "Login realizado com sucesso!")
-            logger.info(f"LOGIN: Usuário '{username}' entrou no sistema.")
-            return redirect("home")
-        else:
-            messages.error(request, "Usuário ou senha inválidos.")
-            logger.warning(f"TENTATIVA DE LOGIN FALHOU PARA '{username}'.")
-
-    return render(request, "accounts/login.html")
-
-
-
-def logout_view(request):
-    """
-    Realiza logout de forma segura e limpa.
-    """
     logout(request)
     messages.info(request, "Você saiu da sua conta.")
-    return redirect("login")
+    return redirect('login')
+
 
 
 class HomeView(LoginRequiredMixin, TemplateView):
@@ -125,6 +82,11 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
+        
+        xp = getattr(user, "xp", 0)
+        level = getattr(user, "level", 1)
+        next_level_xp = max(level, 1) * 100
+        progress_percent = int((xp / next_level_xp) * 100) if next_level_xp else 0
 
         context["profile"] = {
             "username": user.username,
@@ -158,38 +120,19 @@ def profile_view(request):
 
 @login_required
 def profile_edit(request):
-    user = request.user
 
     if request.method == "POST":
-        form = ProfileForm(request.POST, request.FILES, instance=user)
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, "Perfil atualizado com sucesso!")
             return redirect("profile")
     else:
-        form = ProfileForm(instance=user)
+        form = ProfileUpdateForm(instance=request.user)
 
     return render(request, "accounts/profile_edit.html", {"form": form})
 
 
-class BootstrapLoginView(LoginView):
-    template_name = "accounts/login.html"
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["username"].widget.attrs.update({"class": "form-control"})
-        form.fields["password"].widget.attrs.update({"class": "form-control"})
-        return form
-
-
-class BootstrapLoginView(LoginView):
-    template_name = "accounts/login.html"
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["username"].widget.attrs.update({"class": "form-control"})
-        form.fields["password"].widget.attrs.update({"class": "form-control"})
-        return form
 
 
 def register_view(request):
