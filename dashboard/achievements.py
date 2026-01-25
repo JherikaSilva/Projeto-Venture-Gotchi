@@ -56,6 +56,14 @@ def check_and_award(user):
             return
         ach = Achievement.objects.get(key=key)
         UserAchievement.objects.create(user=user, achievement=ach)
+        from dashboard.models import ActivityEvent
+        ActivityEvent.objects.create(
+            user=user,
+            event_type="achievement",
+            message=f"Conquista desbloqueada: {ach.title}",
+            xp_delta=0,
+            track="",
+    )
         earned_keys.add(key)
 
     # ✅ valores sempre definidos antes de usar

@@ -5,6 +5,7 @@ from django.db.models.functions import TruncDate
 from django.utils import timezone
 from missions.models import Mission, SubTask, TRACKS
 from .models import Achievement, ActivityEvent, UserAchievement
+from dashboard.models import UserAchievement
 
 
 
