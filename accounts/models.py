@@ -26,9 +26,8 @@ class User(AbstractUser):
     discipline = models.PositiveIntegerField(default=0)
     leadership = models.PositiveIntegerField(default=0)
 
-    def xp_for_next_level(self) -> int:
-        return 100 * self.level
-
+    def xp_for_next_level(self):
+        return self.level * 100
     def add_xp(self, amount: int):
         if amount <= 0:
             return

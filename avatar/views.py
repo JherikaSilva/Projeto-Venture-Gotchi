@@ -11,29 +11,38 @@ def _get_or_create_profile(user):
     return profile
 
 
+
 @login_required
 def avatar_view(request):
-    profile = _get_or_create_profile(request.user)
+    user = request.user
 
-    # inventário do usuário
-    inv_items = (
-        UserInventory.objects.filter(user=request.user)
-        .select_related("item")
-        .order_by("item__slot", "item__price_xp")
-    )
+    xp = user.xp
+    level = user.level
+    xp_next = level * 100
 
-    # itens disponíveis (loja)
-    shop_items = AvatarItem.objects.all().order_by("slot", "price_xp")
+    progress_percent = int((xp / xp_next) * 100) if xp_next else 0
+    if user.level < 5:
+    gotchi_image = "gotchi/gotchi_lvl1.png"
+    elif user.level < 10:
+    gotchi_image = "gotchi/gotchi_lvl2.png" 
+    else:
+    gotchi_image = "gotchi/gotchi_lvl3.png"
 
-    return render(
-        request,
-        "avatar/avatar.html",
-        {
-            "profile": profile,
-            "inv_items": inv_items,
-            "shop_items": shop_items,
-        },
-    )
+    context = {
+        "user": user,
+        "xp": xp,
+        "level": level,
+        "xp_next": xp_next,
+        "progress_percent": progress_percent,
+        "stats": {
+            "tech": user.tech,
+            "creativity": user.creativity,
+            "discipline": user.discipline,
+            "leadership": user.leadership,
+        }
+    }
+
+    return render(request, "avatar/meu_gotchi.html", context)
 
 
 @login_required
@@ -101,3 +110,4 @@ def unequip_slot(request, slot):
     profile.save()
     messages.success(request, "Item removido.")
     return redirect("avatar")
+

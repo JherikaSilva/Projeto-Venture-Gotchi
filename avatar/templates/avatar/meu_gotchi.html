@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+  <div class="text-center mb-4">
+    {% if user.avatar %}
+      <img src="{{ user.avatar.url }}" class="rounded-circle" width="150">
+    {% else %}
+      <img src="https://via.placeholder.com/150" class="rounded-circle">
+    {% endif %}
+
+    <h3 class="mt-3">{{ user.username }}</h3>
+    <p>Nível {{ level }}</p>
+  </div>
+
+  <div class="mb-4">
+    <p>XP: {{ xp }} / {{ xp_next }}</p>
+    <div class="progress">
+      <div class="progress-bar" style="width: {{ progress_percent }}%">
+        {{ progress_percent }}%
+      </div>
+    </div>
+  </div>
+
+  <div class="row text-center">
+    <div class="col-md-3"><strong>Técnica</strong><br>{{ stats.tech }}</div>
+    <div class="col-md-3"><strong>Criatividade</strong><br>{{ stats.creativity }}</div>
+    <div class="col-md-3"><strong>Disciplina</strong><br>{{ stats.discipline }}</div>
+    <div class="col-md-3"><strong>Liderança</strong><br>{{ stats.leadership }}</div>
+  </div>
+
+</div>
+
+{% endblock %}
