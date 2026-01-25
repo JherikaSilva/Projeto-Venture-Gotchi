@@ -182,23 +182,16 @@
 </script>
 
 
-<!-- Conquistas (opcional) -->
 {% if achievements %}
-  <div class="card shadow-sm mt-4">
-    <div class="card-body">
-      <h5 class="mb-3">Conquistas</h5>
-      <div class="row g-3">
-        {% for a in achievements %}
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="border rounded p-3">
-              <div class="fw-bold">{{ a.title }}</div>
-              <div class="small text-muted">{{ a.description }}</div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
+  {% for ua in achievements %}
+    <div class="border rounded p-3 mb-2">
+      <strong>{{ ua.achievement.title }}</strong><br>
+      <small class="text-muted">{{ ua.achievement.description }}</small>
     </div>
-  </div>
+  {% endfor %}
+{% else %}
+  <p class="text-muted">Nenhuma conquista ainda.</p>
 {% endif %}
+
 
 {% endblock %}
