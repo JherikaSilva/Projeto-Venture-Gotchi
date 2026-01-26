@@ -8,5 +8,5 @@ User = get_user_model()
 @receiver(post_save, sender=User)
 def add_default_group(sender, instance, created, **kwargs):
     if created and not instance.is_superuser:
-        group = Group.objects.get(name='Usuarios')
+        group, _ = Group.objects.get_or_create(name="Usuarios")
         instance.groups.add(group)
