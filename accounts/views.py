@@ -39,7 +39,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
     para XP, missões e gráficos futuramente.
     """
 
-    template_name = 'accounts/home.html'
+    template_name = 'dashboard/home.html'
     login_url = 'login'
 
     def get_context_data(self, **kwargs):
@@ -106,19 +106,6 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         return context
 
 @login_required
-def profile_view(request):
-    if request.method == "POST":
-        form = ProfileForm(request.POST, request.FILES, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Perfil atualizado!")
-            return redirect("profile")
-    else:
-        form = ProfileForm(instance=request.user)
-
-    return render(request, "accounts/profile.html", {"form": form})
-
-@login_required
 def profile_edit(request):
 
     if request.method == "POST":
@@ -130,7 +117,7 @@ def profile_edit(request):
     else:
         form = ProfileUpdateForm(instance=request.user)
 
-    return render(request, "accounts/profile_edit.html", {"form": form})
+    return render(request, "accounts/profile.html", {"form": form})
 
 
 
@@ -145,8 +132,16 @@ def register_view(request):
             user = form.save()
             login(request, user)
             messages.success(request, "Conta criada com sucesso!")
+            if user.requested_role in ("mentor", "company"):
+                messages.info(request, "Cadastro feito! Sua solicitação será analisada por um administrador.")
+                return redirect("pending")
+
             return redirect("dashboard")
     else:
         form = RegisterForm()
 
     return render(request, "accounts/register.html", {"form": form})
+
+@login_required
+def pending_view(request):
+    return render(request, "accounts/pending.html")
