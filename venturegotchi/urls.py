@@ -10,6 +10,8 @@ urlpatterns = [
     path("missions/", include("missions.urls")),
     path("dashboard/", include("dashboard.urls")),
     path("avatar/", include("avatar.urls")),
+    path("community/", include("community.urls")),
+
 
 ]
 
