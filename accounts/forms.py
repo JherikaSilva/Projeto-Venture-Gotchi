@@ -87,7 +87,7 @@ class UserUpdateForm(forms.ModelForm):
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["avatar", "bio", "interests"]
+        fields = ["avatar", "bio", "interests","is_public_profile"]
         widgets = {
             "bio": forms.Textarea(attrs={
                 "class": "form-control",
@@ -99,7 +99,11 @@ class ProfileUpdateForm(forms.ModelForm):
                 "rows": 3,
                 "placeholder": "Ex: Django, UX, inglês..."
             }),
+              "is_public_profile": forms.CheckboxInput(attrs={
+                "class": "form-check-input"
+            }),
         }
+        
 
     avatar = forms.ImageField(
         required=False,
