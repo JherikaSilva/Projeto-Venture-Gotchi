@@ -52,11 +52,23 @@ class RegisterForm(UserCreationForm):
     email = forms.EmailField(
         required=True,
         widget=forms.EmailInput(attrs={"class": "form-control", "placeholder": "Digite seu e-mail"})
+
     )
+    requested_role = forms.ChoiceField(
+        choices=(
+            ("user", "Usuário"),
+            ("mentor", "Mentor (solicitar)"),
+            ("company", "Empresa (solicitar)"),
+        ),
+        required=True,
+        label="Quero me cadastrar como",
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+
 
     class Meta:
         model = User
-        fields = ("username", "email", "password1", "password2")
+        fields = ("username", "email","requested_role", "password1", "password2")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

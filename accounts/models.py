@@ -12,6 +12,20 @@ def avatar_upload_to(instance, filename):
 
 
 class User(AbstractUser):
+    
+    REQUEST_ROLE_CHOICES = (
+        ('user', 'Usuário'),
+        ('mentor', 'Mentor'),
+        ('company', 'Empresa'),
+    )
+
+    requested_role = models.CharField(
+        max_length=20,
+        choices=(('user','Usuário'), ('mentor','Mentor'), ('company','Empresa')),
+        default='user'
+    )
+    role_approved = models.BooleanField(default=False)
+    
     bio = models.TextField(blank=True, default="")
     interests = models.CharField(max_length=255, blank=True, default="")
 
