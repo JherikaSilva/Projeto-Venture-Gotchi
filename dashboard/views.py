@@ -4,16 +4,19 @@ from django.db.models import Count, Sum
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from missions.models import Mission, SubTask, TRACKS
-from .models import Achievement, ActivityEvent, UserAchievement
+from .models import Achievement, ActivityEvent, UserAchievement, ThemedEvent
 from dashboard.models import UserAchievement
 from accounts.decorators import require_perm, approval_required
 from django.contrib.auth import get_user_model
+
 
 User = get_user_model()
 
 @login_required
 def dashboard_home(request):
     user = request.user
+    
+    active_event = ThemedEvent.objects.filter(active=True).first()
 
     active_missions = (
         Mission.objects
@@ -88,7 +91,10 @@ def dashboard_home(request):
         "track_cards": track_cards,
         "xp_days": xp_days,
         "xp_totals": xp_totals,
+         "active_event": active_event,
     }
+    
+    
     return render(request, "dashboard/home.html", context)
 
 @login_required
@@ -107,6 +113,7 @@ def company_panel(request):
     users = User.objects.filter(is_superuser=False).order_by("username")
     return render(request, "dashboard/company_panel.html", {"users": users})
 
+@login_required
 def leaderboard(request):
     top_users = (
         User.objects
