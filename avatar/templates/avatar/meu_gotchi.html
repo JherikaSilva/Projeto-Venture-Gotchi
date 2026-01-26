@@ -88,6 +88,105 @@
     </p>
   {% endif %}
 </div>
+<hr class="my-5">
+
+<div class="row g-4">
+  <!-- EQUIPADOS -->
+  <div class="col-lg-4">
+    <h4 class="mb-3">Equipados</h4>
+
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+
+        <div class="mb-2">
+          <strong>Cabeça:</strong>
+          {% if profile.hat %}
+            {{ profile.hat.name }}
+            <a class="btn btn-sm btn-outline-danger ms-2"
+               href="{% url 'avatar_unequip' 'hat' %}">
+              Remover
+            </a>
+          {% else %}
+            <span class="text-muted">Nenhum</span>
+          {% endif %}
+        </div>
+
+        <div class="mb-2">
+          <strong>Corpo:</strong>
+          {% if profile.body %}
+            {{ profile.body.name }}
+            <a class="btn btn-sm btn-outline-danger ms-2"
+               href="{% url 'avatar_unequip' 'body' %}">
+              Remover
+            </a>
+          {% else %}
+            <span class="text-muted">Nenhum</span>
+          {% endif %}
+        </div>
+
+        <div>
+          <strong>Acessório:</strong>
+          {% if profile.accessory %}
+            {{ profile.accessory.name }}
+            <a class="btn btn-sm btn-outline-danger ms-2"
+               href="{% url 'avatar_unequip' 'accessory' %}">
+              Remover
+            </a>
+          {% else %}
+            <span class="text-muted">Nenhum</span>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- INVENTÁRIO -->
+  <div class="col-lg-8">
+    <h4 class="mb-3">Inventário</h4>
+
+    {% if inventory %}
+      <div class="row g-3">
+        {% for inv in inventory %}
+          <div class="col-6 col-md-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+
+                <div class="small text-muted mb-1">
+                  {{ inv.item.get_rarity_display }} • {{ inv.item.get_slot_display }}
+                </div>
+
+                <strong>{{ inv.item.name }}</strong>
+
+                {% if inv.item.description %}
+                  <div class="small text-muted mt-1">
+                    {{ inv.item.description }}
+                  </div>
+                {% endif %}
+
+                {% if inv.item.image %}
+                  <img src="{{ inv.item.image.url }}"
+                       class="img-fluid rounded mt-2"
+                       alt="{{ inv.item.name }}">
+                {% endif %}
+
+                <div class="d-grid mt-2">
+                  <a class="btn btn-sm btn-primary"
+                     href="{% url 'avatar_equip' inv.item.id %}">
+                    Equipar
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-muted">Você ainda não tem itens no inventário.</p>
+    {% endif %}
+  </div>
+</div>
 
 
 {% endblock %}
