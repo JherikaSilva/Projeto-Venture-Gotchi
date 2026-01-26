@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container py-4" style="max-width: 900px;">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0">Perfil Público</h2>
+    <a href="{% url 'community_room_list' %}" class="btn btn-outline-secondary">Voltar</a>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body d-flex gap-3">
+      <div>
+        {% if profile_user.avatar %}
+          <img src="{{ profile_user.avatar.url }}" class="rounded-circle border" width="90" height="90" style="object-fit: cover;">
+        {% else %}
+          <img src="{% static 'gotchi/gotchi_lvl1.png' %}" class="rounded-circle border" width="90" height="90">
+        {% endif %}
+      </div>
+
+      <div class="flex-grow-1">
+        <h4 class="mb-1">{{ profile_user.username }}</h4>
+        <div class="text-muted small mb-2">
+          Nível {{ profile_user.level }} • XP {{ profile_user.xp }}
+        </div>
+
+        {% if profile_user.bio %}
+          <p class="mb-2"><strong>Bio:</strong> {{ profile_user.bio }}</p>
+        {% endif %}
+
+        {% if profile_user.interests %}
+          <p class="mb-0"><strong>Interesses:</strong> {{ profile_user.interests }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <h4 class="mb-3">Feedback</h4>
+
+  {% if can_send_feedback %}
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <form method="post" action="{% url 'send_feedback' profile_user.public_slug %}">
+          {% csrf_token %}
+
+          <div class="mb-2">
+            <label class="form-label">Nota</label>
+            <select name="rating" class="form-select">
+              <option value="5" selected>5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+              <option value="2">2</option>
+              <option value="1">1</option>
+            </select>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Mensagem</label>
+            <textarea name="message" class="form-control" rows="3" placeholder="Escreva algo legal e construtivo..."></textarea>
+          </div>
+
+          <button class="btn btn-primary">Enviar feedback</button>
+        </form>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if feedbacks %}
+    {% for f in feedbacks %}
+      <div class="border rounded p-3 mb-2 bg-white">
+        <div class="d-flex justify-content-between">
+          <strong>{{ f.from_user.username }}</strong>
+          <span>⭐ {{ f.rating }}</span>
+        </div>
+        <div class="text-muted small">{{ f.created_at }}</div>
+        <div class="mt-2">{{ f.message }}</div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-muted">Ainda não há feedback para este perfil.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

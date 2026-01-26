@@ -64,6 +64,26 @@
             </div>
 
             <button class="btn btn-primary">Salvar</button>
+            <div class="form-check form-switch mt-4">
+              {{ form.is_public_profile }}
+              <label class="form-check-label ms-2">
+                Tornar meu perfil público
+              </label>
+            </div>
+
+            {% if user.is_public_profile and user.public_slug %}
+            <div class="alert alert-info mt-3">
+              Seu perfil está público:
+              <a href="{% url 'public_profile' user.public_slug %}" target="_blank">
+                Ver perfil público
+              </a>
+            </div>
+            {% else %}
+            <div class="alert alert-secondary mt-3">
+              Seu perfil está privado.
+            </div>
+            {% endif %}
+
           </form>
         </div>
       </div>
