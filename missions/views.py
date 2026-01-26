@@ -7,6 +7,17 @@ from .forms import MissionForm, SubTaskForm
 from django.views.decorators.http import require_POST
 from django.apps import apps
 from accounts.decorators import require_perm
+from avatar.models import AvatarItem, UserInventory
+
+def award_random_item(user):
+    owned_ids = UserInventory.objects.filter(user=user).values_list("item_id", flat=True)
+    item = AvatarItem.objects.exclude(id__in=owned_ids).order_by("?").first()
+
+    if not item:
+        return None  # usuário já tem todos os itens
+
+    UserInventory.objects.create(user=user, item=item)
+    return item
 
 
 @login_required
@@ -145,15 +156,26 @@ def complete_subtask(request, subtask_id):
 
     # Se a missão chegou a 100%, marca como concluída e dá bônus
     mission.refresh_from_db()
-    if mission.progress == 100 and not mission.completed:
+    
+    before_level2 = getattr(user, "level", 1) or 1 
+    
+    if mission.progress >= 100 and not mission.completed:
         mission.completed = True
-        # se você tiver completed_at no model, aproveita:
+                # ✅ Recompensa: item colecionável ao concluir a missão
         if hasattr(mission, "completed_at"):
             from django.utils import timezone
             mission.completed_at = timezone.now()
             mission.save(update_fields=["completed", "completed_at"])
         else:
             mission.save(update_fields=["completed"])
+
+        # ✅ Recompensa: item colecionável ao concluir a missão
+        if user.groups.filter(name="Usuarios").exists():
+            rewarded_item = award_random_item(user)
+            if rewarded_item:
+                messages.success(request, f"Você ganhou um item: {rewarded_item.name} 🎁")
+            else:
+                messages.info(request, "Você já possui todos os itens disponíveis 🎉")
 
         bonus_map = {"daily": 20, "weekly": 50, "monthly": 100}
         mission_bonus = bonus_map.get(mission.mission_type, 20)
@@ -173,6 +195,15 @@ def complete_subtask(request, subtask_id):
             message=f"Concluiu a missão: {mission.title}",
             xp_delta=mission_bonus,
             track=mission.track,
+        )
+
+    if getattr(user, "level", 1) > before_level2:
+        ActivityEvent.objects.create(
+            user=user,
+            event_type="level_up",
+            message=f"Subiu para o nível {user.level}!",
+            xp_delta=0,
+            track="",
         )
 
         if getattr(user, "level", 1) > before_level2:
