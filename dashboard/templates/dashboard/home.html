@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
+{% if active_event %}
+  <div class="alert alert-info">
+    🎉 <strong>Evento ativo:</strong> {{ active_event.name }}
+    — XP x{{ active_event.xp_multiplier }}
+  </div>
+{% endif %}
 
 <!-- HUD -->
 <div class="card shadow-sm mb-4">
