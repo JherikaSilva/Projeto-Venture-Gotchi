@@ -6,6 +6,7 @@ from .models import Mission, SubTask
 from .forms import MissionForm, SubTaskForm
 from django.views.decorators.http import require_POST
 from django.apps import apps
+from accounts.decorators import require_perm
 
 
 @login_required
@@ -38,6 +39,7 @@ def mission_detail(request, mission_id):
 
 
 @login_required
+@require_perm("missions.add_mission")
 def mission_create(request):
     if request.method == "POST":
         form = MissionForm(request.POST)
@@ -54,6 +56,7 @@ def mission_create(request):
 
 
 @login_required
+@require_perm("missions.change_mission")
 def mission_edit(request, mission_id):
     mission = get_object_or_404(Mission, id=mission_id, user=request.user)
 
@@ -81,6 +84,7 @@ def mission_delete(request, mission_id):
 
 
 @login_required
+@require_perm("missions.add_subtask")
 def subtask_create(request, mission_id):
     mission = get_object_or_404(Mission, id=mission_id, user=request.user)
 
