@@ -1,6 +1,8 @@
 from django.urls import path
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth import views as auth_views
+from .views import pending_view
+
 
 from .views import (
     HomeView,
@@ -20,8 +22,8 @@ urlpatterns = [
     path("register/", register_view, name="register"),
 
     # Perfil
-    path("profile/", ProfileView.as_view(), name="profile"),
-    path("profile/edit/", profile_edit, name="profile_edit"),
+    path("profile/", profile_edit, name="profile"),
+
 
     # Senhas
     path(
@@ -54,4 +56,7 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
+    path("pending/", pending_view, name="pending"),
+
 ]
+
