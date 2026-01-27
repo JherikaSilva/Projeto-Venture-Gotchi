@@ -24,11 +24,11 @@ def avatar_view(request):
     progress_percent = int((xp / xp_next) * 100) if xp_next else 0
     
     if user.level < 5:
-        gotchi_image = "gotchi/gotchi_lvl1.png"
+        gotchi_image = "gotchi/gotchi_lvl1.jpeg"
     elif user.level < 10:
-        gotchi_image = "gotchi/gotchi_lvl2.png" 
+        gotchi_image = "gotchi/gotchi_lvl2.jpeg" 
     else:
-        gotchi_image = "gotchi/gotchi_lvl3.png"
+        gotchi_image = "gotchi/gotchi_lvl3.jpeg"
         
     missions_count = Mission.objects.filter(user=user).count()
     done_subtasks_count = SubTask.objects.filter(mission__user=user,completed=True).count()

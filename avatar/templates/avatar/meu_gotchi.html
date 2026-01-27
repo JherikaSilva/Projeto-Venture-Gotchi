@@ -5,18 +5,16 @@
 <div class="container mt-4">
 
   <div class="text-center mb-4">
-    {% if user.avatar %}
-      <img src="{{ user.avatar.url }}" class="rounded-circle shadow-sm" width="160" height="160" style="object-fit: cover;">
-    {% else %}
-      <img src="{% static gotchi_image %}" class="rounded-circle shadow-sm" width="160" height="160" style="object-fit: cover;">
-    {% endif %}
-    <p class="text-muted mb-0"> Forma atual: {% if level >= 10 %}Veterano{% elif level >= 5 %}Evoluído{% else %}Iniciante{% endif %}
+    <img src="{% static gotchi_image %}" class="rounded-circle shadow-sm" width="160" height="160"
+         style="object-fit: cover;" alt="Gotchi">
+
+    <p class="text-muted mb-0">
+      Forma atual:
+      {% if level >= 10 %}Veterano{% elif level >= 5 %}Evoluído{% else %}Iniciante{% endif %}
+    </p>
 
     <h3 class="mt-3 mb-1">{{ user.username }}</h3>
     <span class="badge bg-primary">Nível {{ level }}</span>
-    
-</p>
-
   </div>
 
   <div class="mb-3">
@@ -26,167 +24,114 @@
     </div>
 
     <div class="progress mt-2" style="height: 22px;">
-      <div class="progress-bar" role="progressbar"
+      <div class="progress-bar vg-xp" role="progressbar"
            style="width: {{ progress_percent }}%;"
            aria-valuenow="{{ progress_percent }}" aria-valuemin="0" aria-valuemax="100">
         {{ progress_percent }}%
       </div>
     </div>
-
-    <p class="text-muted text-center mt-2 mb-0">
-      Complete missões e subtarefas para ganhar XP e evoluir seu Gotchi.
-    </p>
   </div>
 
   <div class="row text-center mt-4">
     <div class="col-md-3 mb-3">
       <strong>Técnica</strong><br>
-      <span class="fs-4">{{ stats.tech }}</span><br>
-      <small class="text-muted">Missões técnicas</small>
+      <span class="fs-4">{{ stats.tech }}</span>
     </div>
-
     <div class="col-md-3 mb-3">
       <strong>Criatividade</strong><br>
-      <span class="fs-4">{{ stats.creativity }}</span><br>
-      <small class="text-muted">Missões criativas</small>
+      <span class="fs-4">{{ stats.creativity }}</span>
     </div>
-
     <div class="col-md-3 mb-3">
       <strong>Disciplina</strong><br>
-      <span class="fs-4">{{ stats.discipline }}</span><br>
-      <small class="text-muted">Consistência</small>
+      <span class="fs-4">{{ stats.discipline }}</span>
     </div>
-
     <div class="col-md-3 mb-3">
       <strong>Liderança</strong><br>
-      <span class="fs-4">{{ stats.leadership }}</span><br>
-      <small class="text-muted">Organização e metas</small>
+      <span class="fs-4">{{ stats.leadership }}</span>
     </div>
   </div>
 
-</div>
+  <hr class="my-4">
 
-<div class="mt-5">
-  <h4 class="mb-3">Conquistas</h4>
+  <div class="row g-4">
+    <!-- EQUIPADOS -->
+    <div class="col-lg-4">
+      <h4 class="mb-3">Equipados</h4>
 
-  {% if achievements %}
-    <div class="row">
-      {% for a in achievements %}
-        <div class="col-md-4 mb-3">
-          <div class="card shadow-sm h-100">
-            <div class="card-body">
-              <h6 class="mb-1">{{ a.title }}</h6>
-              <small class="text-muted">{{ a.desc }}</small>
-            </div>
+      <div class="card shadow-sm">
+        <div class="card-body">
+
+          <div class="mb-2">
+            <strong>Cabeça:</strong>
+            {% if profile.hat %}
+              {{ profile.hat.name }}
+              <a class="btn btn-sm btn-outline-danger ms-2" href="{% url 'avatar_unequip' 'hat' %}">Remover</a>
+            {% else %}
+              <span class="text-muted">Nenhum</span>
+            {% endif %}
           </div>
+
+          <div class="mb-2">
+            <strong>Corpo:</strong>
+            {% if profile.body %}
+              {{ profile.body.name }}
+              <a class="btn btn-sm btn-outline-danger ms-2" href="{% url 'avatar_unequip' 'body' %}">Remover</a>
+            {% else %}
+              <span class="text-muted">Nenhum</span>
+            {% endif %}
+          </div>
+
+          <div>
+            <strong>Acessório:</strong>
+            {% if profile.accessory %}
+              {{ profile.accessory.name }}
+              <a class="btn btn-sm btn-outline-danger ms-2" href="{% url 'avatar_unequip' 'accessory' %}">Remover</a>
+            {% else %}
+              <span class="text-muted">Nenhum</span>
+            {% endif %}
+          </div>
+
         </div>
-      {% endfor %}
-    </div>
-  {% else %}
-    <p class="text-muted">
-      Ainda sem conquistas. Complete missões e subtarefas para desbloquear.
-    </p>
-  {% endif %}
-</div>
-<hr class="my-5">
-
-<div class="row g-4">
-  <!-- EQUIPADOS -->
-  <div class="col-lg-4">
-    <h4 class="mb-3">Equipados</h4>
-
-    <div class="card shadow-sm mb-3">
-      <div class="card-body">
-
-        <div class="mb-2">
-          <strong>Cabeça:</strong>
-          {% if profile.hat %}
-            {{ profile.hat.name }}
-            <a class="btn btn-sm btn-outline-danger ms-2"
-               href="{% url 'avatar_unequip' 'hat' %}">
-              Remover
-            </a>
-          {% else %}
-            <span class="text-muted">Nenhum</span>
-          {% endif %}
-        </div>
-
-        <div class="mb-2">
-          <strong>Corpo:</strong>
-          {% if profile.body %}
-            {{ profile.body.name }}
-            <a class="btn btn-sm btn-outline-danger ms-2"
-               href="{% url 'avatar_unequip' 'body' %}">
-              Remover
-            </a>
-          {% else %}
-            <span class="text-muted">Nenhum</span>
-          {% endif %}
-        </div>
-
-        <div>
-          <strong>Acessório:</strong>
-          {% if profile.accessory %}
-            {{ profile.accessory.name }}
-            <a class="btn btn-sm btn-outline-danger ms-2"
-               href="{% url 'avatar_unequip' 'accessory' %}">
-              Remover
-            </a>
-          {% else %}
-            <span class="text-muted">Nenhum</span>
-          {% endif %}
-        </div>
-
       </div>
     </div>
-  </div>
 
-  <!-- INVENTÁRIO -->
-  <div class="col-lg-8">
-    <h4 class="mb-3">Inventário</h4>
+    <!-- INVENTÁRIO -->
+    <div class="col-lg-8">
+      <h4 class="mb-3">Inventário</h4>
 
-    {% if inventory %}
-      <div class="row g-3">
-        {% for inv in inventory %}
-          <div class="col-6 col-md-4">
-            <div class="card shadow-sm h-100">
-              <div class="card-body">
-
-                <div class="small text-muted mb-1">
-                  {{ inv.item.get_rarity_display }} • {{ inv.item.get_slot_display }}
-                </div>
-
-                <strong>{{ inv.item.name }}</strong>
-
-                {% if inv.item.description %}
-                  <div class="small text-muted mt-1">
-                    {{ inv.item.description }}
+      {% if inventory %}
+        <div class="row g-3">
+          {% for inv in inventory %}
+            <div class="col-6 col-md-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-body">
+                  <div class="small text-muted mb-1">
+                    {{ inv.item.get_slot_display }}
                   </div>
-                {% endif %}
 
-                {% if inv.item.image %}
-                  <img src="{{ inv.item.image.url }}"
-                       class="img-fluid rounded mt-2"
-                       alt="{{ inv.item.name }}">
-                {% endif %}
+                  <strong>{{ inv.item.name }}</strong>
 
-                <div class="d-grid mt-2">
-                  <a class="btn btn-sm btn-primary"
-                     href="{% url 'avatar_equip' inv.item.id %}">
-                    Equipar
-                  </a>
+                  {% if inv.item.image_path %}
+                    <img src="{% static inv.item.image_path %}"
+                         class="img-fluid rounded mt-2" alt="{{ inv.item.name }}">
+                  {% endif %}
+
+                  <div class="d-grid mt-2">
+                    <a class="btn btn-sm btn-primary" href="{% url 'avatar_equip' inv.item.id %}">
+                      Equipar
+                    </a>
+                  </div>
                 </div>
-
               </div>
             </div>
-          </div>
-        {% endfor %}
-      </div>
-    {% else %}
-      <p class="text-muted">Você ainda não tem itens no inventário.</p>
-    {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted">Você ainda não tem itens no inventário.</p>
+      {% endif %}
+    </div>
   </div>
-</div>
 
+</div>
 
 {% endblock %}
