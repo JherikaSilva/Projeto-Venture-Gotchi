@@ -1,0 +1,150 @@
+:root{
+  --vg-primary:#2c82c0;
+  --vg-secondary:#6C3BFF;
+  --vg-success:#2ECC71;
+
+  --vg-surface:#ffffff;
+  --vg-border: rgba(20, 20, 43, .10);
+  --vg-muted: rgba(20, 20, 43, .65);
+  --vg-bg:#8c0510;
+}
+
+/* fundo geral */
+body{
+  background: var(--vg-bg) !important;
+  color: #14142b;
+}
+
+/* === FIX: espaçamento global (todas as páginas) === */
+.vg-page{
+  padding: 24px 16px;
+}
+@media (min-width: 992px){
+  .vg-page{ padding: 32px 24px; }
+}
+
+/* container principal */
+.vg-shell{
+  max-width: 1120px;
+}
+
+/* cards padrão */
+.vg-card{
+  background: var(--vg-surface);
+  border: 1px solid var(--vg-border);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(20, 20, 43, .06);
+}
+
+/* título */
+.vg-title{
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+
+.vg-muted{ color: var(--vg-muted); }
+
+/* pill */
+.vg-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--vg-border);
+  background: rgba(108,59,255,.06);
+  color: #3b2aa6;
+  font-weight: 700;
+}
+
+/* hero (top do dashboard) */
+.vg-hero{
+  border-radius: 18px;
+  border: 1px solid var(--vg-border);
+  background:
+    radial-gradient(900px 320px at 20% 0%, rgba(59, 103, 191, 0.18), transparent 60%),
+    radial-gradient(900px 320px at 80% 0%, rgba(66, 8, 214, 0.18), transparent 60%),
+    #0b1020;
+  color: #fff;
+  overflow: hidden;
+}
+.vg-hero .vg-muted{ color: rgba(139, 170, 236, 0.78); }
+
+/* progress */
+.vg-progress{
+  height: 10px !important;
+  background: rgba(255, 6, 6, 0.663) !important;
+  border-radius: 999px !important;
+}
+.vg-progress .progress-bar{
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, var(--vg-success), #7CFFB2) !important;
+}
+
+/* botões */
+.btn-vg{
+  background: linear-gradient(90deg, var(--vg-primary), var(--vg-secondary));
+  border: none;
+  color: #fff;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 800;
+}
+.btn-vg:hover{ filter: brightness(.96); color:#fff; }
+
+.btn-vg-outline{
+  border: 1px solid rgba(255,255,255,.35);
+  color: #fff;
+  background: rgba(255,255,255,.08);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 800;
+}
+.btn-vg-outline:hover{
+  background: rgba(255,255,255,.14);
+  color:#fff;
+}
+
+/* stats */
+.vg-stat{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.vg-stat .num{
+  font-size: 22px;
+  font-weight: 900;
+}
+
+/* lista bonitinha */
+.vg-list .list-group-item{
+  border: 1px solid var(--vg-border);
+  border-radius: 14px !important;
+  margin-bottom: 10px;
+  box-shadow: 0 8px 22px rgba(20,20,43,.05);
+}
+
+/* badge arredondada */
+.vg-badge{
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 800;
+}
+
+/* ===== Aplicar estilo VG em TODOS os cards do Bootstrap ===== */
+.card{
+  background: #eae9e9 !important;
+  border: 1px solid rgba(20, 20, 43, .10) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 30px rgba(116, 95, 74, 0.06) !important;
+}
+
+.card-body{
+  padding: 24px !important;
+}
+
+@media (min-width: 992px){
+  .card-body{
+    padding: 32px !important;
+  }
+}

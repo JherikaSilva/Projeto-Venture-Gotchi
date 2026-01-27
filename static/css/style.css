@@ -1,119 +1,161 @@
-/* ===== Reset ===== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Inter", sans-serif;
+:root{
+  --vg-primary:#000000;   /* Azul Tech */
+  --vg-secondary:#6C3BFF; /* Roxo Digital */
+  --vg-success:#2ECC71;   /* Verde Progresso */
+  --vg-bg:#0b1020;        /* Fundo app */
+  --vg-bg2:#111a33;
+  --vg-card:rgba(255,255,255,.06);
+  --vg-border:rgba(0, 0, 0, 0.1);
+  --vg-text:#010309;
+  --vg-muted:rgba(6, 47, 153, 0.72);
 }
 
-/* ===== LIGHT / DARK MODE ===== */
-html[data-theme="light"] {
-    --bg: #ffffff;
-    --text: #1a1a1a;
-    --primary: #4a62ff;
-    --danger: #e63946;
-    --card: #f2f4f8;
+html, body { height: 100%; }
+body{
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(58,125,255,.35), transparent 60%),
+    radial-gradient(900px 520px at 90% 0%, rgba(108,59,255,.28), transparent 55%),
+    linear-gradient(180deg, var(--vg-bg), var(--vg-bg2));
+  color: var(--vg-text);
 }
 
-html[data-theme="dark"] {
-    --bg: #1a1b1f;
-    --text: #e0e0e0;
-    --primary: #7ca7ff;
-    --danger: #ff6e6e;
-    --card: #2a2b31;
+/* fonte pixel opcional (nível, XP, labels curtas) */
+.pixel-font{
+  font-family: "Press Start 2P", monospace;
+  letter-spacing: .5px;
 }
 
-/* ===== Body ===== */
-body {
-    background: var(--bg);
-    color: var(--text);
-    transition: 0.3s ease;
+/* Navbar HUD */
+.vg-navbar{
+  background: linear-gradient(90deg, rgba(58,125,255,.85), rgba(108,59,255,.85));
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(10px);
 }
 
-/* ===== Navbar ===== */
-.navbar {
-    background: var(--card);
-    padding: 12px 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,.08);
+/* Conteúdo “app-like” */
+main { padding-bottom: 32px; }
+.vg-page{ padding: 22px 0; }
+
+/* Cards estilo HUD */
+.vg-card{
+  background: var(--vg-card);
+  border: 1px solid var(--vg-border);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
 }
 
-.nav-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.vg-card .card-body{ color: var(--vg-text); }
+.vg-muted{ color: var(--vg-muted); }
+
+/* Botões */
+.btn-vg{
+  background: var(--vg-primary);
+  border-color: var(--vg-primary);
+  color:#fff;
+  font-weight: 600;
+}
+.btn-vg:hover{
+  background:#2f68d6;
+  border-color:#2f68d6;
+  color:#da0d0d;
+}
+.btn-vg-outline{
+  border:1px solid rgba(255,255,255,.22);
+  color: var(--vg-text);
+  background: transparent;
+}
+.btn-vg-outline:hover{
+  background: rgba(255,255,255,.08);
+  color: var(--vg-text);
 }
 
-.nav-logo {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--primary);
-    text-decoration: none;
+/* Barra XP verde animada (HUD) */
+.progress{
+  background: rgba(255,255,255,.10);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-bar.vg-xp{
+  background: var(--vg-success) !important;
+  position: relative;
+  overflow: hidden;
+}
+.progress-bar.vg-xp::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.22) 50%, rgba(255,255,255,0) 100%);
+  transform: translateX(-100%);
+  animation: vgShimmer 1.6s infinite;
+}
+@keyframes vgShimmer{
+  0%{ transform: translateX(-100%); }
+  100%{ transform: translateX(100%); }
 }
 
-.nav-menu {
-    display: flex;
-    gap: 16px;
+/* Avatar/pixel art sem blur */
+.vg-avatar{
+  width:64px;
+  height:64px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.15);
+  box-shadow: 0 10px 25px rgba(0,0,0,.25);
 }
 
-.nav-item {
-    text-decoration: none;
-    color: var(--text);
-    padding: 6px 10px;
-    border-radius: 6px;
-    transition: 0.3s;
+/* Badges */
+.badge-vg{
+  background: rgba(108,59,255,.25);
+  border: 1px solid rgba(108,59,255,.55);
+  color: #f4e9e9;
 }
 
-.nav-item:hover {
-    background: var(--primary);
-    color: white;
+/* Listas / divisões */
+.vg-divider{
+  border-top:1px solid rgba(255,255,255,.10);
 }
 
-.nav-danger {
-    color: var(--danger);
+/* Inputs mais “app” */
+.form-control, .form-select, textarea{
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  color: var(--vg-text) !important;
+}
+.form-control::placeholder, textarea::placeholder{
+  color: rgba(234,240,255,.45) !important;
+}
+/* ===== Layout global (aplica no site todo) ===== */
+.vg-shell{
+  max-width: 1120px;
 }
 
-/* Toggle button (mobile) */
-.nav-toggle {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 26px;
-    cursor: pointer;
+.vg-page{
+  padding: 24px 16px;
 }
 
-/* ===== Responsividade ===== */
-@media (max-width: 768px) {
-    .nav-toggle {
-        display: block;
-    }
-
-    .nav-menu {
-        display: none;
-        flex-direction: column;
-        margin-top: 10px;
-    }
-
-    .nav-menu.active {
-        display: flex;
-    }
+@media (min-width: 992px){
+  .vg-page{
+    padding: 32px 24px;
+  }
 }
 
-/* ===== Alertas ===== */
-.alert {
-    padding: 10px 15px;
-    border-radius: 4px;
-    margin-bottom: 8px;
+/* melhora espaçamento interno geral */
+.vg-card .card-body{
+  padding: 24px;
 }
 
-.alert.success { background: #dfffdc; color: #206020; }
-.alert.error { background: #ffd6d6; color: #802020; }
-.alert.warning { background: #fff1c2; color: #806000; }
+@media (min-width: 992px){
+  .vg-card .card-body{
+    padding: 28px;
+  }
+}
 
-/* ===== Footer ===== */
-.footer {
-    text-align: center;
-    padding: 20px;
-    opacity: 0.6;
-    font-size: 14px;
-    margin-top: 30px;
+/* lista do bootstrap com cara de card */
+.list-group-item{
+  background: rgba(255,255,255,.06) !important;
+  border-color: rgba(255,255,255,.10) !important;
+  color: var(--vg-text) !important;
 }
