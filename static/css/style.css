@@ -118,12 +118,16 @@ main { padding-bottom: 32px; }
   border-top:1px solid rgba(255,255,255,.10);
 }
 
-/* Inputs mais “app” */
-.form-control, .form-select, textarea{
+.form-control,
+.form-select,
+textarea,
+input,
+select {
   background: rgba(255,255,255,.06) !important;
-  border: 1px solid rgba(255,255,255,.14) !important;
+  border: 2px solid var(--vg-secondary) !important; /* roxo fixo */
   color: var(--vg-text) !important;
 }
+
 .form-control::placeholder, textarea::placeholder{
   color: rgba(234,240,255,.45) !important;
 }
