@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=80)),
                 ('slot', models.CharField(choices=[('hat', 'Cabeça'), ('body', 'Corpo'), ('accessory', 'Acessório')], max_length=15)),
                 ('price_xp', models.PositiveIntegerField(default=50)),
-                ('image_path', models.CharField(default='avatar/items/placeholder.png', max_length=200)),
+                ('image_path', models.CharField(default='avatar/items/placeholder.jpeg', max_length=200)),
             ],
         ),
         migrations.CreateModel(
