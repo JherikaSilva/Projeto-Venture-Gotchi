@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Atribuir trilha: {{ track.name }}</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <select name="team_id" class="form-select mb-3">
+    {% for team in teams %}
+      <option value="{{ team.id }}">{{ team.name }}</option>
+    {% endfor %}
+  </select>
+
+  <button class="btn btn-vg">Atribuir</button>
+</form>
+
+{% endblock %}

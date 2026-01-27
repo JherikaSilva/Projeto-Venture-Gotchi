@@ -48,19 +48,23 @@ class TeamMembership(models.Model):
 class CorporateTrack(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="tracks")
     name = models.CharField(max_length=120)
-    description = models.TextField(blank=True, default="")
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    description = models.TextField(blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True
+    )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.company.name} - {self.name}"
+        return self.name
 
 
 class CorporateMission(models.Model):
     track = models.ForeignKey(CorporateTrack, on_delete=models.CASCADE, related_name="missions")
     title = models.CharField(max_length=120)
-    description = models.TextField(blank=True, default="")
+    description = models.TextField(blank=True)
     xp_reward = models.PositiveIntegerField(default=50)
     deadline = models.DateField(null=True, blank=True)
 
@@ -69,15 +73,13 @@ class CorporateMission(models.Model):
 
 
 class TeamTrackAssignment(models.Model):
-    """
-    Atribui uma trilha corporativa para uma equipe.
-    """
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="track_assignments")
-    track = models.ForeignKey(CorporateTrack, on_delete=models.CASCADE, related_name="team_assignments")
+    track = models.ForeignKey(CorporateTrack, on_delete=models.CASCADE)
     assigned_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ("team", "track")
+
 
 
 
@@ -104,3 +106,10 @@ class TeamGoal(models.Model):
             self.is_completed = True
             self.completed_at = timezone.now()
 
+class CorporateMissionCompletion(models.Model):
+    mission = models.ForeignKey(CorporateMission, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    completed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("mission", "user")

@@ -95,5 +95,36 @@
 
   {% endif %}
 </div>
+<div class="card mt-4">
+  <div class="card-body">
+    <h5 class="mb-3">Trilhas da Equipe</h5>
+
+    <ul class="list-group">
+      {% for t in tracks %}
+        <li class="list-group-item">
+          <strong>{{ t.track.name }}</strong><br>
+          <small class="text-muted">{{ t.track.description }}</small>
+        </li>
+      {% empty %}
+        <li class="list-group-item text-muted">
+          Nenhuma trilha atribuída ainda.
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<h6 class="mt-3">Missões da trilha</h6>
+<ul>
+  {% for mission in t.track.missions.all %}
+    <li>
+      {{ mission.title }} —
+      <a href="{% url 'corporate_mission_complete' mission.id %}">
+        Concluir
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+
 
 {% endblock %}

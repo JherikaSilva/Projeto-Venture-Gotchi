@@ -62,7 +62,7 @@ def dashboard_home(request):
     by_track_map = {item["track"]: item["total"] for item in by_track}
     track_cards = [{"key": k, "label": label, "total": by_track_map.get(k, 0)} for k, label in TRACKS]
 
-    # sugestões automáticas
+# sugestões automáticas
     suggestions = []
     if not active_missions.exists():
         suggestions.append("Crie uma missão diária pequena para ganhar XP rápido.")
