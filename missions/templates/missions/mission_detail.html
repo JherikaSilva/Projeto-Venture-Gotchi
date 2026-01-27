@@ -5,7 +5,7 @@
   <div class="d-flex justify-content-between align-items-start mb-3">
     <div>
       <h2 class="mb-1">{{ mission.title }}</h2>
-      <div class="text-muted">
+      <div class="vg-muted">
         {{ mission.get_mission_type_display }} • {{ mission.get_track_display }}
         {% if mission.deadline %} • Prazo: {{ mission.deadline }}{% endif %}
       </div>
@@ -52,7 +52,7 @@
         {% endfor %}
       </ul>
       {% else %}
-      <p class="text-muted mb-3">Ainda sem subtarefas.</p>
+      <p class="vg-muted mb-3">Ainda sem subtarefas.</p>
       {% endif %}
 
       <hr>

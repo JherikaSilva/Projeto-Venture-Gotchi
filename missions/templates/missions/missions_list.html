@@ -16,7 +16,7 @@
 
     {% if missions %}
         {% for mission in missions %}
-            <div class="card shadow-sm mb-4">
+            <div class="vg-card mb-4">
                 <div class="card-body">
 
                     <div class="d-flex justify-content-between align-items-center">
@@ -29,7 +29,7 @@
                         {% endif %}
                     </div>
 
-                    <p class="text-muted">{{ mission.description|default:"Sem descrição." }}</p>
+                    <p class="vg-muted">{{ mission.description|default:"Sem descrição." }}</p>
 
                     <p><strong>Progresso:</strong> {{ mission.progress }}%</p>
 
@@ -48,7 +48,7 @@
             </div>
         {% endfor %}
     {% else %}
-        <p class="text-center text-muted">Nenhuma missão cadastrada ainda.</p>
+        <p class="text-center vg-muted">Nenhuma missão cadastrada ainda.</p>
     {% endif %}
 </div>
 {% endblock %}

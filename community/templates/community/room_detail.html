@@ -7,10 +7,10 @@
     </div>
 
     {% if room.description %}
-    <p class="text-muted">{{ room.description }}</p>
+    <p class="vg-muted">{{ room.description }}</p>
     {% endif %}
 
-    <div class="card shadow-sm mb-3">
+    <div class="vg-card mb-3">
         <div class="card-body">
             <form method="post" action="{% url 'community_room_post' room.slug %}">
                 {% csrf_token %}
@@ -30,14 +30,14 @@
         </a>
         {% else %}
         <strong>{{ p.user.username }}</strong>
-        <span class="text-muted small">(perfil privado)</span>
+        <span class="vg-muted small">(perfil privado)</span>
         {% endif %}
-        <div class="text-muted small">{{ p.created_at|date:"d/m/Y H:i" }}</div>
+        <div class="vg-muted small">{{ p.created_at|date:"d/m/Y H:i" }}</div>
         <div class="mt-2">{{ p.content }}</div>
     </div>
     {% endfor %}
     {% else %}
-    <p class="text-muted">Nenhuma mensagem ainda.</p>
+    <p class="vg-muted">Nenhuma mensagem ainda.</p>
     {% endif %}
 </div>
 {% endblock %}
