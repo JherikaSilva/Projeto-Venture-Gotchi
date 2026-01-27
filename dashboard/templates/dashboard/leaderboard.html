@@ -13,7 +13,7 @@
   </thead>
   <tbody>
     {% for u in top_users %}
-    <tr {% if u.id==user.id %}class="table-warning" {% endif %}>
+    <tr {% if u.id == user.id %}class="table-warning" {% endif %}>
       <td>{{ forloop.counter }}</td>
       <td>{{ u.username }}</td>
       <td>{{ u.level }}</td>
