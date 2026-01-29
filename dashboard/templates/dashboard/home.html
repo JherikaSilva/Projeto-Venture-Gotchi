@@ -5,27 +5,28 @@
 <div class="container vg-shell">
 
   {% if active_event %}
-    <div class="vg-card p-3 mb-3">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <div>
-          <div class="vg-muted small">Evento ativo</div>
-          <div class="fw-bold">🎉 {{ active_event.name }}</div>
+  <div class="vg-card p-3 mb-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <div class="vg-muted small">Evento ativo</div>
+        <div class="fw-bold">🎉
+          {% if active_event %}
+          {{ active_event.name }}
+          {% endif %}
         </div>
-        <span class="vg-pill">XP x{{ active_event.xp_multiplier }}</span>
       </div>
+      <span class="vg-pill">XP x{{ active_event.xp_multiplier }}</span>
     </div>
+  </div>
   {% endif %}
 
   <!-- HERO / HUD -->
   <div class="vg-hero p-4 mb-4">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
       <div class="d-flex align-items-center gap-3">
-        <img
-          src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'gotchi/gotchi_lvl1.png' %}{% endif %}"
+        <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'gotchi/gotchi_lvl1.png' %}{% endif %}"
           class="rounded-circle border"
-          style="width:72px;height:72px;object-fit:cover;border-color:rgba(255,255,255,.25)!important;"
-          alt="Avatar"
-        >
+          style="width:72px;height:72px;object-fit:cover;border-color:rgba(255,255,255,.25)!important;" alt="Avatar">
         <div>
           <div class="vg-muted small">Bem-vinda,</div>
           <div class="vg-title h4 mb-1">{{ user.username }}</div>
@@ -93,13 +94,13 @@
   <!-- TRILHAS -->
   <div class="row g-3 mb-4">
     {% for t in track_cards %}
-      <div class="col-6 col-lg-3">
-        <div class="vg-card p-3">
-          <div class="vg-muted small">{{ t.label }}</div>
-          <div class="vg-title h4 mb-0">{{ t.total }}</div>
-          <div class="vg-muted small">missões</div>
-        </div>
+    <div class="col-6 col-lg-3">
+      <div class="vg-card p-3">
+        <div class="vg-muted small">{{ t.label }}</div>
+        <div class="vg-title h4 mb-0">{{ t.total }}</div>
+        <div class="vg-muted small">missões</div>
       </div>
+    </div>
     {% endfor %}
   </div>
 
@@ -114,24 +115,24 @@
         </div>
 
         {% if achievements %}
-          <div class="row g-3">
-            {% for ua in achievements %}
-              <div class="col-12">
-                <div class="vg-card p-3" style="box-shadow:none;border-style:dashed;">
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                      <div class="fw-bold">{{ ua.achievement.title }}</div>
-                      <div class="vg-muted small">{{ ua.achievement.description }}</div>
-                      <div class="vg-muted small mt-1">{{ ua.earned_at|date:"d/m/Y H:i" }}</div>
-                    </div>
-                    <span class="badge text-bg-success vg-badge">OK</span>
-                  </div>
+        <div class="row g-3">
+          {% for ua in achievements %}
+          <div class="col-12">
+            <div class="vg-card p-3" style="box-shadow:none;border-style:dashed;">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="fw-bold">{{ ua.achievement.title }}</div>
+                  <div class="vg-muted small">{{ ua.achievement.description }}</div>
+                  <div class="vg-muted small mt-1">{{ ua.earned_at|date:"d/m/Y H:i" }}</div>
                 </div>
+                <span class="badge text-bg-success vg-badge">OK</span>
               </div>
-            {% endfor %}
+            </div>
           </div>
+          {% endfor %}
+        </div>
         {% else %}
-          <p class="vg-muted mb-0">Nenhuma conquista ainda. Complete subtarefas para desbloquear 🙂</p>
+        <p class="vg-muted mb-0">Nenhuma conquista ainda. Complete subtarefas para desbloquear 🙂</p>
         {% endif %}
       </div>
     </div>
@@ -145,22 +146,22 @@
         </div>
 
         {% if active_missions %}
-          <ul class="list-group vg-list">
-            {% for m in active_missions %}
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <div class="fw-bold">{{ m.title }}</div>
-                  <div class="vg-muted small">
-                    {{ m.get_mission_type_display }} • {{ m.get_track_display }}
-                    {% if m.deadline %} • Prazo: {{ m.deadline }}{% endif %}
-                  </div>
-                </div>
-                <a class="btn btn-sm btn-outline-secondary" href="{% url 'mission_detail' m.id %}">Abrir</a>
-              </li>
-            {% endfor %}
-          </ul>
+        <ul class="list-group vg-list">
+          {% for m in active_missions %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">{{ m.title }}</div>
+              <div class="vg-muted small">
+                {{ m.get_mission_type_display }} • {{ m.get_track_display }}
+                {% if m.deadline %} • Prazo: {{ m.deadline }}{% endif %}
+              </div>
+            </div>
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'mission_detail' m.id %}">Abrir</a>
+          </li>
+          {% endfor %}
+        </ul>
         {% else %}
-          <p class="vg-muted mb-0">Nenhuma missão ativa. Crie uma agora 🙂</p>
+        <p class="vg-muted mb-0">Nenhuma missão ativa. Crie uma agora 🙂</p>
         {% endif %}
       </div>
 
@@ -168,23 +169,23 @@
         <h5 class="mb-2">Histórico</h5>
 
         {% if history %}
-          <ul class="list-group vg-list">
-            {% for e in history %}
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <div class="fw-semibold">{{ e.message }}</div>
-                  <div class="vg-muted small">{{ e.created_at|date:"d/m/Y H:i" }}</div>
-                </div>
-                {% if e.xp_delta %}
-                  <span class="badge text-bg-success vg-badge">+{{ e.xp_delta }} XP</span>
-                {% else %}
-                  <span class="badge text-bg-secondary vg-badge">{{ e.get_event_type_display }}</span>
-                {% endif %}
-              </li>
-            {% endfor %}
-          </ul>
+        <ul class="list-group vg-list">
+          {% for e in history %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-semibold">{{ e.message }}</div>
+              <div class="vg-muted small">{{ e.created_at|date:"d/m/Y H:i" }}</div>
+            </div>
+            {% if e.xp_delta %}
+            <span class="badge text-bg-success vg-badge">+{{ e.xp_delta }} XP</span>
+            {% else %}
+            <span class="badge text-bg-secondary vg-badge">{{ e.get_event_type_display }}</span>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
         {% else %}
-          <p class="vg-muted mb-0">Ainda sem histórico.</p>
+        <p class="vg-muted mb-0">Ainda sem histórico.</p>
         {% endif %}
       </div>
     </div>
@@ -194,13 +195,13 @@
   <div class="vg-card p-3 mt-4">
     <h5 class="mb-2">Sugestões automáticas</h5>
     {% if suggestions %}
-      <ul class="mb-0">
-        {% for s in suggestions %}
-          <li class="vg-muted">{{ s }}</li>
-        {% endfor %}
-      </ul>
+    <ul class="mb-0">
+      {% for s in suggestions %}
+      <li class="vg-muted">{{ s }}</li>
+      {% endfor %}
+    </ul>
     {% else %}
-      <p class="vg-muted mb-0">Tudo certo por aqui 🙂</p>
+    <p class="vg-muted mb-0">Tudo certo por aqui 🙂</p>
     {% endif %}
   </div>
 
@@ -217,8 +218,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  const xpDays = {{ xp_days|safe }};
-  const xpTotals = {{ xp_totals|safe }};
+  const xpDays = {{ xp_days| safe }};
+  const xpTotals = {{ xp_totals| safe }};
 
   const ctx = document.getElementById('xpChart');
   new Chart(ctx, {
