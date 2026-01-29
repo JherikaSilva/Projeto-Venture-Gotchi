@@ -12,6 +12,7 @@ from .views import (
     register_view,
     public_profile,
     send_feedback,
+    mentor_dashboard
 )
 
 urlpatterns = [
@@ -62,6 +63,8 @@ urlpatterns = [
     
     path("u/<slug:slug>/", public_profile, name="public_profile"),
     path("u/<slug:slug>/feedback/", send_feedback, name="send_feedback"),
+    path("mentor/", mentor_dashboard, name="mentor_dashboard"),
+
 
 
 ]
