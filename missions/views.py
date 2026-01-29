@@ -6,7 +6,6 @@ from .models import Mission, SubTask
 from .forms import MissionForm, SubTaskForm
 from django.views.decorators.http import require_POST
 from django.apps import apps
-from accounts.decorators import require_perm
 from avatar.models import AvatarItem, UserInventory
 
 def award_random_item(user):
@@ -50,7 +49,6 @@ def mission_detail(request, mission_id):
 
 
 @login_required
-@require_perm("missions.add_mission")
 def mission_create(request):
     if request.method == "POST":
         form = MissionForm(request.POST)
@@ -67,7 +65,6 @@ def mission_create(request):
 
 
 @login_required
-@require_perm("missions.change_mission")
 def mission_edit(request, mission_id):
     mission = get_object_or_404(Mission, id=mission_id, user=request.user)
 
@@ -95,7 +92,6 @@ def mission_delete(request, mission_id):
 
 
 @login_required
-@require_perm("missions.add_subtask")
 def subtask_create(request, mission_id):
     mission = get_object_or_404(Mission, id=mission_id, user=request.user)
 
@@ -220,20 +216,6 @@ def complete_subtask(request, subtask_id):
     messages.success(request, f"Subtarefa concluída! Você ganhou {xp_gained} XP ✅")
     return redirect("mission_detail", mission_id=mission.id)
 
-
-@login_required
-def create_mission(request):
-    if request.method == "POST":
-        form = MissionForm(request.POST)
-        if form.is_valid():
-            mission = form.save(commit=False)
-            mission.user = request.user
-            mission.save()
-            return redirect("dashboard")
-    else:
-        form = MissionForm()
-
-    return render(request, "missions/create.html", {"form": form})
 
 
 @login_required
