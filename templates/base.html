@@ -84,16 +84,6 @@
             <a href="{% url 'mentor_dashboard' %}">Mentor</a>
           {% endif %}
 
-          
-          
-          
-          
-          
-          
-          {% if user.role_approved and perms.missions.add_mission %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'mentor_panel' %}">Mentor</a></li>
-          {% endif %}
-
           {% if user.role_approved and perms.dashboard.view_activityevent %}
           <li class="nav-item"><a class="nav-link" href="{% url 'company_panel' %}">Empresa</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'team_dashboard' %}">Equipes</a></li>
